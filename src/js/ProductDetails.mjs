@@ -39,9 +39,25 @@ function productDetailsTemplate(product) {
   productImage.src = product.Image;
   productImage.alt = product.NameWithoutBrand;
 
-  document.getElementById("productPrice").textContent = product.FinalPrice;
-  document.getElementById("productColor").textContent = product.Colors[0].ColorName;
-  document.getElementById("productDesc").innerHTML = product.DescriptionHtmlSimple;
+  const originalPrice = product.SuggestedRetailPrice;
+  const finalPrice = product.FinalPrice;
+
+  const discount = originalPrice - finalPrice;
+  const discountPercent = Math.round((discount / originalPrice) * 100);
+
+  document.getElementById("productPrice").innerHTML = `
+    <span class="original-price">$${originalPrice}</span>
+    $${finalPrice}
+    <span class="discount-badge">
+      Save ${discountPercent}%
+    </span>
+  `;
+
+  document.getElementById("productColor").textContent =
+    product.Colors[0].ColorName;
+
+  document.getElementById("productDesc").innerHTML =
+    product.DescriptionHtmlSimple;
 
   document.getElementById("addToCart").dataset.id = product.Id;
 }

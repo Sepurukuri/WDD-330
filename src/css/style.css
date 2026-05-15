@@ -241,6 +241,21 @@ button {
   grid-column: 3;
 }
 
+.original-price {
+  text-decoration: line-through;
+  color: gray;
+  margin-right: 8px;
+}
+
+.discount-badge {
+  background-color: red;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-size: 0.9rem;
+}
+
 @media screen and (min-width: 500px) {
   body {
     max-width: 1080px;
