@@ -290,6 +290,18 @@ button {
   grid-column: 3;
 }
 
+.sort {
+  margin: 1rem 0;
+}
+
+.sort label {
+  margin-right: 0.5rem;
+}
+
+.sort select {
+  padding: 0.4rem;
+}
+
 @media screen and (min-width: 500px) {
   body {
     max-width: 1080px;
