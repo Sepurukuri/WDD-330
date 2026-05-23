@@ -10,12 +10,27 @@
 
   <body>
     <header class="divider" id="main-header"></header>
+
     <main class="divider">
       <section class="products">
-        <h2>Top Products: <span class="title highlight"></span></h2>
+
+        <h2>
+          Top Products:
+          <span class="title highlight"></span>
+        </h2>
+
+        <div class="sort">
+          <label for="sortProducts">Sort By:</label>
+
+          <select id="sortProducts">
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+          </select>
+        </div>
+
         <ul class="product-list"></ul>
+
       </section>
     </main>
-    <footer id="main-footer"></footer>
-  </body>
-</html>
