@@ -50,3 +50,4 @@ function productDetailsTemplate(product) {
   document.querySelector("#add-to-cart").dataset.id = product.Id;
 }
 
+
