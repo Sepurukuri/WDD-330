@@ -1,16 +1,47 @@
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
+  const isDiscounted =
+    product.FinalPrice < product.SuggestedRetailPrice;
+
+  const discountPercent = isDiscounted
+    ? Math.round(
+        ((product.SuggestedRetailPrice - product.FinalPrice) /
+          product.SuggestedRetailPrice) *
+          100
+      )
+    : 0;
+
   return `
     <li class="product-card">
       <a href="/product_pages/?product=${product.Id}">
         <img src="${product.Images.PrimaryMedium}" alt="${product.Name}">
+
+        ${
+          isDiscounted
+            ? `<span class="discount-badge">-${discountPercent}% OFF</span>`
+            : ""
+        }
+
         <h3>${product.Brand.Name}</h3>
         <p>${product.NameWithoutBrand}</p>
-        <p class="product-card__price">$${product.FinalPrice}</p>
+
+        ${
+          isDiscounted
+            ? `
+              <p class="original-price">
+                $${product.SuggestedRetailPrice}
+              </p>
+            `
+            : ""
+        }
+
+        <p class="product-card__price">
+          $${product.FinalPrice}
+        </p>
       </a>
     </li>
-    `;
+  `;
 }
 
 export default class ProductList {
@@ -21,18 +52,29 @@ export default class ProductList {
   }
 
   async init() {
-    const list = await this.dataSource.getData(this.category);
-    this.renderList(list);
-    document.querySelector(".title").textContent = this.category;
+    try {
+      console.log("Category:", this.category);
+
+      const list = await this.dataSource.getData(this.category);
+
+      console.log("Products returned:", list);
+
+      this.renderList(list);
+
+      const title = document.querySelector(".title");
+      if (title) {
+        title.textContent = this.category;
+      }
+    } catch (err) {
+      console.error("ProductList Error:", err);
+    }
   }
 
   renderList(list) {
-    // const htmlStrings = list.map(productCardTemplate);
-    // this.listElement.insertAdjacentHTML("afterbegin", htmlStrings.join(""));
-
-    // apply use new utility function instead of the commented code above
-    renderListWithTemplate(productCardTemplate, this.listElement, list);
-
+    renderListWithTemplate(
+      productCardTemplate,
+      this.listElement,
+      list
+    );
   }
-
 }
