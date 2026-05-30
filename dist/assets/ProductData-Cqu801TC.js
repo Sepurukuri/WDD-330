@@ -1,1 +1,0 @@
-function o(t){if(t.ok)return t.json();throw new Error("Bad Response")}class n{constructor(){}async getData(s){const a=await fetch(`undefinedproducts/search/${s}`);return(await o(a)).Result}async findProductById(s){const a=await fetch(`undefinedproduct/${s}`),e=await o(a);return console.log(e.Result),e.Result}}export{n as P};

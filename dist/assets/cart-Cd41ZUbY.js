@@ -1,9 +1,9 @@
-import{l as t,g as e}from"./utils-BJByaD23.js";t();function s(){const r=e("so-cart").map(c=>o(c));document.querySelector(".product-list").innerHTML=r.join("")}function o(a){return`<li class="cart-card divider">
+import{l as t,g as e}from"./utils-CYY8ntpY.js";t();function s(){const r=e("so-cart").map(c=>o(c));document.querySelector(".product-list").innerHTML=r.join("")}function o(a){return`<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
       src="${a.Image}"
       alt="${a.Name}"
-    />
+   >
   </a>
   <a href="#">
     <h2 class="card__name">${a.Name}</h2>
