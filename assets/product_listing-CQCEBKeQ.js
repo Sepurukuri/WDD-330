@@ -1,4 +1,4 @@
-import{r as i,l as s,b as c}from"./utils-CYY8ntpY.js";import{E as o}from"./ExternalServices-DcrgEka_.js";function n(e){const t=e.FinalPrice<e.SuggestedRetailPrice,r=t?Math.round((e.SuggestedRetailPrice-e.FinalPrice)/e.SuggestedRetailPrice*100):0;return`
+import{r as i,l as s,b as c}from"./utils-BLF6_eem.js";import{E as o}from"./ExternalServices-DcrgEka_.js";function n(e){const t=e.FinalPrice<e.SuggestedRetailPrice,r=t?Math.round((e.SuggestedRetailPrice-e.FinalPrice)/e.SuggestedRetailPrice*100):0;return`
     <li class="product-card">
       <a href="/product_pages/?product=${e.Id}">
         <img src="${e.Images.PrimaryMedium}" alt="${e.Name}">
