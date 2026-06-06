@@ -1,23 +1,58 @@
-<link rel="stylesheet" href="../src/css/style.css">
-
+details/index.html
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Details</title>
+    <title>CineFinder | Details</title>
+
+    <link rel="stylesheet" href="../src/css/style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 </head>
 <body>
 
-<div id="detailsContainer">
+    <header id="mainHeader"></header>
 
-</div>
+    <main>
 
-<script type="module">
+        <section class="details-page">
 
-import { renderDetails } from "../src/js/detailsModule.mjs";
+            <div id="detailsContainer">
 
-renderDetails();
+                <div class="loading-container">
 
-</script>
+                    <h2>Loading Movie Information...</h2>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer id="mainFooter"></footer>
+
+    <script type="module">
+
+        import { loadPartials } from "../src/js/loadPartials.mjs";
+        import { renderDetails } from "../src/js/detailsModule.mjs";
+
+        async function initializePage() {
+
+            await loadPartials();
+
+            await renderDetails();
+
+        }
+
+        initializePage();
+
+    </script>
 
 </body>
 </html>

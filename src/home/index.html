@@ -3,47 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineFinder</title>
+    <title>CineFinder | Home</title>
 
     <link rel="stylesheet" href="../src/css/style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 </head>
 <body>
 
-<header>
-    <h1>CineFinder</h1>
-</header>
+    <header id="mainHeader"></header>
 
-<section class="hero">
+    <main>
 
-    <h2>Find Your Next Favorite Movie</h2>
+        <section class="hero">
 
-    <p>
-        Discover trending movies and television shows from around the world.
-    </p>
+            <div class="hero-content">
 
-    <input
-        id="searchInput"
-        type="text"
-        placeholder="Search movies or TV shows..."
-    >
+                <h1>Discover Your Next Favorite Movie</h1>
 
-    <button id="searchBtn">
-        Search
-    </button>
+                <p>
+                    Browse trending movies and TV shows from around the world.
+                    Search thousands of titles and explore detailed information
+                    all in one place.
+                </p>
 
-</section>
+                <div class="search-container">
 
-<section>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search movies or TV shows..."
+                    >
 
-    <h2>Trending Now</h2>
+                    <button id="searchBtn">
+                        Search
+                    </button>
 
-    <div id="movieContainer" class="movie-grid">
+                </div>
 
-    </div>
+            </div>
 
-</section>
+        </section>
 
-<script type="module" src="../src/js/main.mjs"></script>
+        <section class="section-container">
+
+            <div class="section-title">
+
+                <h2>Trending Now</h2>
+
+                <p>
+                    Popular movies and TV shows everyone is watching.
+                </p>
+
+            </div>
+
+            <div
+                id="movieContainer"
+                class="movie-grid"
+            ></div>
+
+        </section>
+
+    </main>
+
+    <footer id="mainFooter"></footer>
+
+    <script type="module" src="../src/js/main.mjs"></script>
 
 </body>
 </html>
