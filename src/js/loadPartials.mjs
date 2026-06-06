@@ -1,24 +1,48 @@
 export async function loadPartials() {
 
-    const header =
-        document.getElementById("mainHeader");
+    try {
 
-    const footer =
-        document.getElementById("mainFooter");
+        const header =
+            document.getElementById(
+                "mainHeader"
+            );
 
-    if (header) {
-        const response =
-            await fetch("../partials/header.html");
+        const footer =
+            document.getElementById(
+                "mainFooter"
+            );
 
-        header.innerHTML =
-            await response.text();
+        if (header) {
+
+            const headerResponse =
+                await fetch(
+                    "../partials/header.html"
+                );
+
+            header.innerHTML =
+                await headerResponse.text();
+
+        }
+
+        if (footer) {
+
+            const footerResponse =
+                await fetch(
+                    "../partials/footer.html"
+                );
+
+            footer.innerHTML =
+                await footerResponse.text();
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Error loading partials:",
+            error
+        );
+
     }
 
-    if (footer) {
-        const response =
-            await fetch("../partials/footer.html");
-
-        footer.innerHTML =
-            await response.text();
-    }
 }
