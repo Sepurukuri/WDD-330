@@ -1,7 +1,5 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-    server: {
-        open: true
-    }
+  base: "/WDD-330/",
 });
