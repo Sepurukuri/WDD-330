@@ -1,10 +1,18 @@
+// src/js/apiService.mjs
+
+import {
+  TMDB_IMAGE_BASE,
+  PLACEHOLDER_IMAGE,
+} from "./constants.mjs";
+
 const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
-
+/**
+ * Verify that the TMDB API key exists.
+ */
 function checkApiKey() {
   if (!TMDB_API_KEY) {
     throw new Error(
@@ -13,6 +21,11 @@ function checkApiKey() {
   }
 }
 
+/**
+ * Generic fetch helper.
+ * @param {string} url
+ * @returns {Promise<any>}
+ */
 async function fetchJson(url) {
   const response = await fetch(url);
 
@@ -20,14 +33,14 @@ async function fetchJson(url) {
     throw new Error(`API request failed (${response.status})`);
   }
 
-  return response.json();
+  return await response.json();
 }
 
-import {
-  TMDB_IMAGE_BASE,
-  PLACEHOLDER_IMAGE,
-} from "./constants.mjs";
-
+/**
+ * Build a poster image URL.
+ * @param {string|null} path
+ * @returns {string}
+ */
 export function getPosterUrl(path) {
   if (!path) {
     return PLACEHOLDER_IMAGE;
@@ -36,6 +49,9 @@ export function getPosterUrl(path) {
   return `${TMDB_IMAGE_BASE}${path}`;
 }
 
+/**
+ * Get trending movies and TV shows.
+ */
 export async function getTrendingMovies() {
   checkApiKey();
 
@@ -48,6 +64,10 @@ export async function getTrendingMovies() {
   return data.results ?? [];
 }
 
+/**
+ * Search movies and TV shows.
+ * @param {string} query
+ */
 export async function searchMedia(query) {
   checkApiKey();
 
@@ -65,6 +85,9 @@ export async function searchMedia(query) {
   return data.results ?? [];
 }
 
+/**
+ * Get movie genres.
+ */
 export async function getGenres() {
   checkApiKey();
 
@@ -77,6 +100,9 @@ export async function getGenres() {
   return data.genres ?? [];
 }
 
+/**
+ * Discover movies using filters.
+ */
 export async function discoverMovies({
   genre = "",
   sortBy = "popularity.desc",
@@ -97,6 +123,9 @@ export async function discoverMovies({
   return data.results ?? [];
 }
 
+/**
+ * Get movie details.
+ */
 export async function getMovieDetails(movieId) {
   checkApiKey();
 
@@ -104,9 +133,12 @@ export async function getMovieDetails(movieId) {
     `${TMDB_BASE_URL}/movie/${movieId}` +
     `?api_key=${TMDB_API_KEY}`;
 
-  return fetchJson(url);
+  return await fetchJson(url);
 }
 
+/**
+ * Get TV show details.
+ */
 export async function getTvDetails(tvId) {
   checkApiKey();
 
@@ -114,10 +146,16 @@ export async function getTvDetails(tvId) {
     `${TMDB_BASE_URL}/tv/${tvId}` +
     `?api_key=${TMDB_API_KEY}`;
 
-  return fetchJson(url);
+  return await fetchJson(url);
 }
 
-export async function getTrailerFromTMDB(id, mediaType = "movie") {
+/**
+ * Get trailer from TMDB.
+ */
+export async function getTrailerFromTMDB(
+  id,
+  mediaType = "movie"
+) {
   checkApiKey();
 
   const url =
@@ -135,12 +173,17 @@ export async function getTrailerFromTMDB(id, mediaType = "movie") {
   return trailer ?? null;
 }
 
+/**
+ * Fallback YouTube trailer search.
+ */
 export async function searchYouTubeTrailer(title) {
   if (!YOUTUBE_API_KEY) {
     return null;
   }
 
-  const query = encodeURIComponent(`${title} official trailer`);
+  const query = encodeURIComponent(
+    `${title} official trailer`
+  );
 
   const url =
     "https://www.googleapis.com/youtube/v3/search" +
