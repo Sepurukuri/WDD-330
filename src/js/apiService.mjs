@@ -23,9 +23,14 @@ async function fetchJson(url) {
   return response.json();
 }
 
+import {
+  TMDB_IMAGE_BASE,
+  PLACEHOLDER_IMAGE,
+} from "./constants.mjs";
+
 export function getPosterUrl(path) {
   if (!path) {
-    return "/images/placeholder.png";
+    return PLACEHOLDER_IMAGE;
   }
 
   return `${TMDB_IMAGE_BASE}${path}`;
