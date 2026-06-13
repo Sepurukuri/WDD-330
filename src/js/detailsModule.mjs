@@ -1,160 +1,132 @@
-import { getDetails } from "./apiService.mjs";
+import {
+  getMovieDetails,
+  getTvDetails,
+  getTrailerFromTMDB,
+  getPosterUrl,
+} from "./apiService.mjs";
 
-export async function renderDetails() {
+const container = document.querySelector("#details");
 
-    const detailsContainer =
-        document.getElementById(
-            "detailsContainer"
-        );
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
 
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    const id =
-        params.get("id");
-
-    const type =
-        params.get("type") || "movie";
-
-    if (!id) {
-
-        detailsContainer.innerHTML = `
-            <div class="error-message">
-                <h2>Movie Not Found</h2>
-                <p>
-                    No movie information was provided.
-                </p>
-            </div>
-        `;
-
-        return;
-
-    }
-
-    try {
-
-        const data =
-            await getDetails(
-                id,
-                type
-            );
-
-        const title =
-            data.title ||
-            data.name ||
-            "Unknown Title";
-
-        const releaseDate =
-            data.release_date ||
-            data.first_air_date ||
-            "Not Available";
-
-        const rating =
-            data.vote_average
-                ? data.vote_average.toFixed(1)
-                : "N/A";
-
-        const poster =
-            data.poster_path
-                ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-                : "https://placehold.co/500x750?text=No+Poster";
-
-        const overview =
-            data.overview ||
-            "No description available.";
-
-        const genres =
-            data.genres
-                ?.map(
-                    genre => genre.name
-                )
-                .join(", ") ||
-            "Not Available";
-
-        detailsContainer.innerHTML = `
-
-            <div class="details-layout">
-
-                <div class="details-poster">
-
-                    <img
-                        src="${poster}"
-                        alt="${title}"
-                    >
-
-                </div>
-
-                <div class="details-info">
-
-                    <h1>${title}</h1>
-
-                    <div class="details-meta">
-
-                        <span>
-                            ⭐ Rating: ${rating}
-                        </span>
-
-                        <span>
-                            📅 Release:
-                            ${releaseDate}
-                        </span>
-
-                    </div>
-
-                    <div class="details-genres">
-
-                        <h3>Genres</h3>
-
-                        <p>${genres}</p>
-
-                    </div>
-
-                    <div class="details-description">
-
-                        <h3>Synopsis</h3>
-
-                        <p>${overview}</p>
-
-                    </div>
-
-                    <div class="details-actions">
-
-                        <a
-                            href="../home/index.html"
-                            class="back-btn"
-                        >
-                            ← Back to Home
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    } catch (error) {
-
-        console.error(error);
-
-        detailsContainer.innerHTML = `
-            <div class="error-message">
-
-                <h2>
-                    Unable to Load Details
-                </h2>
-
-                <p>
-                    Something went wrong while
-                    retrieving movie information.
-                </p>
-
-            </div>
-        `;
-
-    }
-
+  return {
+    id: params.get("id"),
+    type: params.get("type") || "movie",
+  };
 }
+
+function formatGenres(genres) {
+  if (!genres || genres.length === 0) {
+    return "Unknown";
+  }
+
+  return genres.map((genre) => genre.name).join(", ");
+}
+
+async function renderDetails() {
+  const { id, type } = getQueryParams();
+
+  if (!id) {
+    container.innerHTML = `
+      <div class="details-content">
+        <h2>Movie not found</h2>
+        <p>No valid movie or TV show ID was provided.</p>
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    let item;
+
+    if (type === "tv") {
+      item = await getTvDetails(id);
+    } else {
+      item = await getMovieDetails(id);
+    }
+
+    const trailer = await getTrailerFromTMDB(id, type);
+
+    const title = item.title || item.name;
+    const release =
+      item.release_date ||
+      item.first_air_date ||
+      "Unknown";
+
+    const runtime =
+      item.runtime ||
+      (item.episode_run_time?.[0] ?? "N/A");
+
+    container.innerHTML = `
+      <img
+        src="${getPosterUrl(item.poster_path)}"
+        alt="${title}"
+      >
+
+      <div class="details-content">
+
+        <h1>${title}</h1>
+
+        <p>
+          <strong>⭐ Rating:</strong>
+          ${Number(item.vote_average).toFixed(1)}
+        </p>
+
+        <p>
+          <strong>📅 Release:</strong>
+          ${release}
+        </p>
+
+        <p>
+          <strong>🎭 Genres:</strong>
+          ${formatGenres(item.genres)}
+        </p>
+
+        <p>
+          <strong>⏱ Runtime:</strong>
+          ${runtime} ${
+      runtime !== "N/A" ? "minutes" : ""
+    }
+        </p>
+
+        <p>
+          ${item.overview || "No overview available."}
+        </p>
+
+        ${
+          trailer
+            ? `
+          <iframe
+            src="https://www.youtube.com/embed/${trailer.key}"
+            title="Official Trailer"
+            allowfullscreen
+          ></iframe>
+        `
+            : `
+          <p>
+            Trailer not available.
+          </p>
+        `
+        }
+
+      </div>
+    `;
+  } catch (error) {
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="details-content">
+
+        <h2>Error</h2>
+
+        <p>
+          Unable to load this content.
+        </p>
+
+      </div>
+    `;
+  }
+}
+
+renderDetails();

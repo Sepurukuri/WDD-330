@@ -1,145 +1,163 @@
-import { getTrending } from "./apiService.mjs";
-import { search } from "./searchModule.mjs";
 import {
-    renderMovies,
-    showLoading,
-    showError
-} from "./uiModule.mjs";
-import { loadPartials } from "./loadPartials.mjs";
+  getTrendingMovies,
+  searchMedia,
+  getGenres,
+  discoverMovies,
+} from "./apiService.mjs";
 
-const movieContainer =
-    document.getElementById("movieContainer");
+import {
+  renderMovieGrid,
+} from "./movieCard.mjs";
 
-const searchInput =
-    document.getElementById("searchInput");
+const movieGrid = document.querySelector("#movieGrid");
+const searchInput = document.querySelector("#searchInput");
+const searchButton = document.querySelector("#searchButton");
+const genreSelect = document.querySelector("#genreSelect");
+const sortSelect = document.querySelector("#sortSelect");
 
-const searchBtn =
-    document.getElementById("searchBtn");
-
-async function loadTrendingMovies() {
-
-    try {
-
-        showLoading(movieContainer);
-
-        const data =
-            await getTrending();
-
-        if (!data.results) {
-
-            throw new Error(
-                "No trending movies found."
-            );
-
-        }
-
-        renderMovies(
-            data.results,
-            movieContainer
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        showError(
-            movieContainer,
-            "Unable to load trending content."
-        );
-
-    }
-
+/**
+ * Display a loading spinner.
+ */
+function showLoader() {
+  movieGrid.innerHTML = `
+    <div class="loader"></div>
+  `;
 }
 
+/**
+ * Display an error message.
+ * @param {string} message
+ */
+function showError(message) {
+  movieGrid.innerHTML = `
+    <p style="text-align:center;grid-column:1/-1;">
+      ${message}
+    </p>
+  `;
+}
+
+/**
+ * Load trending movies and TV shows.
+ */
+async function loadTrending() {
+  try {
+    showLoader();
+
+    const results = await getTrendingMovies();
+
+    renderMovieGrid(movieGrid, results);
+  } catch (error) {
+    console.error(error);
+
+    showError(
+      "Unable to load trending content."
+    );
+  }
+}
+
+/**
+ * Populate the genre dropdown.
+ */
+async function populateGenres() {
+  try {
+    const genres = await getGenres();
+
+    genres.forEach((genre) => {
+      const option = document.createElement("option");
+
+      option.value = genre.id;
+      option.textContent = genre.name;
+
+      genreSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+/**
+ * Perform a search.
+ */
 async function performSearch() {
+  const query = searchInput.value.trim();
 
-    const query =
-        searchInput.value.trim();
+  if (!query) {
+    loadTrending();
+    return;
+  }
 
-    if (!query) {
+  try {
+    showLoader();
 
-        alert(
-            "Please enter a movie or TV show title."
-        );
+    const results = await searchMedia(query);
 
-        return;
+    renderMovieGrid(movieGrid, results);
+  } catch (error) {
+    console.error(error);
 
-    }
-
-    try {
-
-        showLoading(movieContainer);
-
-        const data =
-            await search(query);
-
-        if (
-            !data.results ||
-            data.results.length === 0
-        ) {
-
-            movieContainer.innerHTML = `
-                <div class="empty-message">
-                    <h3>No results found</h3>
-                    <p>
-                        Try searching for another movie
-                        or TV show.
-                    </p>
-                </div>
-            `;
-
-            return;
-
-        }
-
-        renderMovies(
-            data.results,
-            movieContainer
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        showError(
-            movieContainer,
-            "Search failed. Please try again."
-        );
-
-    }
-
-}
-
-function setupEventListeners() {
-
-    searchBtn.addEventListener(
-        "click",
-        performSearch
+    showError(
+      "Search failed."
     );
+  }
+}
 
-    searchInput.addEventListener(
-        "keypress",
-        (event) => {
+/**
+ * Apply filters using Discover endpoint.
+ */
+async function applyFilters() {
+  try {
+    showLoader();
 
-            if (event.key === "Enter") {
+    const results = await discoverMovies({
+      genre: genreSelect.value,
+      sortBy: sortSelect.value,
+    });
 
-                performSearch();
+    renderMovieGrid(movieGrid, results);
+  } catch (error) {
+    console.error(error);
 
-            }
-
-        }
+    showError(
+      "Unable to apply filters."
     );
-
+  }
 }
 
-async function initializeApp() {
+/* -------------------------
+   Event Listeners
+------------------------- */
 
-    await loadPartials();
+searchButton?.addEventListener(
+  "click",
+  performSearch
+);
 
-    setupEventListeners();
+searchInput?.addEventListener(
+  "keydown",
+  (event) => {
+    if (event.key === "Enter") {
+      performSearch();
+    }
+  }
+);
 
-    await loadTrendingMovies();
+genreSelect?.addEventListener(
+  "change",
+  applyFilters
+);
 
+sortSelect?.addEventListener(
+  "change",
+  applyFilters
+);
+
+/* -------------------------
+   Initialize App
+------------------------- */
+
+async function init() {
+  await populateGenres();
+  await loadTrending();
 }
 
-initializeApp();
+init();

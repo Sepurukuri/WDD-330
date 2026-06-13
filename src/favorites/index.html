@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Movie Details</title>
+  <title>Favorites</title>
 
   <link
     rel="stylesheet"
@@ -18,7 +18,7 @@
 
   <script
     type="module"
-    src="/src/js/detailsModule.mjs"
+    src="/src/js/favorites.mjs"
     defer
   ></script>
 
@@ -29,27 +29,27 @@
 <header class="site-header">
 
   <div class="logo">
-
     🎬 MovieFinder
-
   </div>
 
   <nav>
-
     <a href="../home/index.html">
       Home
     </a>
-
   </nav>
 
 </header>
 
-<main
-  id="details"
-  class="details-container"
->
+<main class="container">
 
-  <div class="loader"></div>
+  <h1 class="section-title">
+    My Favorites
+  </h1>
+
+  <div
+    id="favoritesGrid"
+    class="movie-grid"
+  ></div>
 
 </main>
 
